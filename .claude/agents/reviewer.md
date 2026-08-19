@@ -18,6 +18,8 @@ description: "Day0 推理流程的 Reviewer 子代理。对 Developer 的适配�
 ### A. 覆盖面核对（对照设计）
 - 逐条对照 Designer 判定表：判定为「需改」的 module 是否都已实现；「零适配」的 module 是否真的零改动。
 - E1-E12 标记为需改的项是否落地。
+- **枚举完整性（附录 D）**：判定表是否覆盖了 config + modeling 双来源交叉结果；被标 `⚠️` 的 module 是否都有单独审查记录。
+- **加载期映射（§4.0）**：判定表里的 missing/unexpected 是否都有对应 loader 处理；Developer 是否证明了权重加载无 Missing/Unexpected keys。
 - 是否有绕过设计文档的越权改动（多改、少改、改错）。
 
 ### B. 隐蔽问题（重点，参照设计文档附录 B/C）
@@ -25,6 +27,7 @@ description: "Day0 推理流程的 Reviewer 子代理。对 Developer 的适配�
 - **厂商分支硬编码**：是否出现 `is_rocm()` / `cuda` / `hip` 硬编码导致 NPU 跑错分支（对应 Q0 陷阱）。
 - **OOT 注册生效证据**：Developer 是否真的证明了替换生效，而非「写了但没接上」。
 - **参数覆盖/分支缺失**：扩展现有实现（类型 4）时，新参数/新分支是否有遗漏。
+- **精度细节（新算子/新激活）**：激活/路由/norm 的中间计算是否用 fp32；`dt_bias`/`A_log` 等门控参数是否 float32；低秩分解是否与厂商等价。
 - 改动是否最小、可读、遵循既有代码风格。
 
 ### C. UT 质量

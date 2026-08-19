@@ -35,6 +35,7 @@ HCCL_OP_EXPANSION_MODE=AIV VLLM_ASCEND_ENABLE_FLASHCOMM1=0 \
 - **Stage A（dummy 快通道）**：加 `--load-format dummy`，快速验架构路径 / 算子路径 / API 路径。
 - **Stage B（真实权重强制门）**：去掉 `--load-format dummy`，验 Key 映射、量化去量化路径、KV/QK norm 分片、运行时稳定。
   > dummy 不等于真实权重，**签收前必须过真实权重门**。
+- **加载期检查（§4.0，配合 Stage B 一起做）**：真实权重加载日志里 grep `Missing|Unexpected|size mismatch`——出现任一项都是阻断项，回 Developer 修 loader 再放行，不能带着 missing key 继续。
 
 ### 3) readiness + 冒烟（必须真-ready，非仅 startup）
 ```bash

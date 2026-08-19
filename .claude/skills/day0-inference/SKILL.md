@@ -29,7 +29,7 @@ description: "Day0 推理流程编排：对一个新模型在 Ascend NPU 上的 
 ### Phase A — Designer 设计
 1. 以 **Agent(dep，`designer`)** 或向子代理注入角色描述的方式，把 `designer` 角色交给一个子代理。
 2. 输入：模型路径 + 设计方法论引用（`/Users/chenlisi/code/infer/vllm/新模型NPU适配设计方案-整合版.md`）。
-3. 收集设计文档 → 存 `./.day0/<model>/design/`。核对是否含：模型全景 / Q0 结论 / 逐 module 判定表 / E1-E12 标记 / 实现顺序 / 给 Developer 的执行要点。缺项 → 打回 Designer 补。
+3. 收集设计文档 → 存 `./.day0/<model>/design/`。核对是否含：模型全景 / Q0 结论 / module 枚举完整性结论 / 逐 module 判定表（含加载期差异列）/ E1-E12 标记 / 实现顺序 / 给 Developer 的执行要点。缺项 → 打回 Designer 补。
 
 ### Phase B — Developer 实现 + UT
 1. 把 `developer` 角色交给一个子代理，**输入 = Designer 设计文档**。

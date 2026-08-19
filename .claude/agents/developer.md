@@ -26,6 +26,12 @@ description: "Day0 推理流程的 Developer 子代理。依据 Designer 输出�
   - **类型 4**：扩展已有 Ascend 实现（补参数丢弃/分支）。
   - **类型 5**：全新结构（算子 + backend + KV spec），标注更高级别的验证需求。
 - 遵循**实现顺序铁律**：先 eager 后图、先单卡后并行；所有兜底 `else` 分支加 `raise NotImplementedError`（静默错误显式化）。
+- **精度细节（新算子/新激活的常见精度坑，逐个核对）**：
+  - 激活/路由/norm 的**中间计算用 fp32**（带 sigmoid/tanh/softmax 的激活、路由打分、QK-norm），不要直接 bf16 一路算到底——昇腾上最典型的精度不达标来源。
+  - **dtype 一致性**：`dt_bias`/`A_log` 等门控参数通常要求 float32 参数 + float32 运算（对照同族层 GDN/KDA 的写法）。
+  - **低秩分解的精度**：低秩投影（q_lora/kv_lora）展开后是否与厂商实现等价（顺序、dtype）。
+  - 形状/布局：conv1d 的 weight 是否需要 `unsqueeze(1)`；状态矩阵的 layout（dim-first vs dim-last）是否与 kernel 一致。
+  - 无法在无 NPU 环境验证的，标注「待真实权重门验证」，不阻塞 UT。
 - 环境约定：**不要用系统 python3 / 裸 pip**，用 `uv` 或 `.venv/bin/python` 跑 UT。
 
 ## UT 开发与验证
